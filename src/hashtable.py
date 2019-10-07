@@ -43,6 +43,10 @@ class HashTable:
         return self._hash(key) % self.capacity
 
 
+    #
+    #  [0, 1, 2, 3, ...... c-1]
+    #
+    # self.storage[i] = LinkedPair(key1, value1) -> LinkedPair(key3, value2) -> LinkedPair(key3, value3`    )
     def insert(self, key, value):
         '''
         Store the value with the given key.
@@ -51,7 +55,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+
+        bucket = self._hash_mod(key)
+        node = LinkedPair(key,value)
+        node.next=self.storage[bucket] # whatever there is  in the bucket right now
+        self.storage[bucket] = node
+        #self.storage[bucket] =
+
 
 
 
@@ -63,7 +73,30 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+
+        bucket= self._hash_mod(key)
+        if self.storage[bucket] is None:
+            return
+
+        head=self.storage[bucket]
+        if head.key == key:
+           self.storage[bucket] = head.next
+           return
+
+        current= self.storage[bucket]
+        previous = head
+        while current:
+            if current.key ==key:
+                previous.next=current.next
+                return
+
+            else:
+                previous=current
+                current= current.next
+
+
+
+
 
 
     def retrieve(self, key):
@@ -74,7 +107,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        bucket = self._hash_mod(key)
+        head = self.storage[bucket]
+
+        while head:
+            if head.key == key:
+                return head.value
+            head = head.next
+
+        return None
 
 
     def resize(self):
@@ -84,7 +125,8 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        for i in range(self.capacity):
+            self.storage.append(None)
 
 
 
